@@ -1,0 +1,27 @@
+# Ignore node_modules directory
+node_modules/
+
+# Ignore logs and runtime data
+logs/
+*.log
+
+# Ignore built files and directories
+dist/
+out/
+build/
+
+# Ignore environment-specific configuration files
+.env
+.env.local
+.env.*.local
+
+# Ignore sensitive or private information (e.g., API keys, passwords)
+secrets.json
+
+# Ignore development tools and settings
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
