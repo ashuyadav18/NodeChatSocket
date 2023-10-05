@@ -80,6 +80,8 @@ app.post("/send-notification", (req, res) => {
     notification: {
       title: "New Message",
       body: message,
+    },
+    data: {
       SOCKET: "true",
     },
   };
@@ -101,5 +103,3 @@ const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-// first push notification code
-// hello code pushed from ashucoc57@gmail.com
