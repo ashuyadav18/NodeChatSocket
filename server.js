@@ -2,6 +2,9 @@ const express = require("express");
 const http = require("http");
 const socketIo = require("socket.io");
 
+// add firebase admin sdk for push notifications...
+const admin = require("firebase-admin");
+
 const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
@@ -51,6 +54,49 @@ io.on("connection", (socket) => {
   });
 });
 
+// Initialize Firebase Admin SDK
+const serviceAccount = require(".//Firebase/candor-ivf-firebase-adminsdk-sihlp-e765ca511c.json");
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
+
+// Add a new endpoint to send push notifications
+app.use(express.json());
+app.post("/send-notification", (req, res) => {
+  if (req.get("Content-Type") === "application/json") {
+    // Handle raw JSON
+    console.log("this is request application/json", req.body);
+  } else {
+    // Handle form-data
+    console.log("this is request form data", req.body);
+  }
+
+  const { commonChatID, message, mobileNo, ReceiverIDIS, FCMTOKEN } = req.body;
+  console.log("the request was successful here is fcm id", FCMTOKEN);
+  // Retrieve the device token for the given userId from your database or storage
+
+  // Send a push notification
+  const payload = {
+    notification: {
+      title: "New Message",
+      body: message,
+      SOCKET: "true",
+    },
+  };
+
+  admin
+    .messaging()
+    .sendToDevice(FCMTOKEN, payload)
+    .then((response) => {
+      console.log("Notification sent successfully:", response);
+      res.status(200).json({ success: true });
+    })
+    .catch((error) => {
+      console.error("Error sending notification:", error);
+      res.status(500).json({ success: false });
+    });
+});
+// push notification code above
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
